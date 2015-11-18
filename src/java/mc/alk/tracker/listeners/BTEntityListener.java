@@ -13,11 +13,7 @@ import mc.alk.tracker.objects.WLT;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -107,24 +103,27 @@ public class BTEntityListener implements Listener{
 
 		/// Determine our killer
 		EntityDamageEvent lastDamageCause = targetEntity.getLastDamageCause();
-		Player killerEntity = null;
+		Entity killerEntity = null;
 		if (lastDamageCause instanceof EntityDamageByEntityEvent){
 			Entity damager = ((EntityDamageByEntityEvent) lastDamageCause).getDamager();
 			if (damager instanceof Player) { /// killer is player
-				killerEntity = (Player) damager;
-				killer = killerEntity.getName();
+				Player player = (Player) damager;
 				killerPlayer = true;
-				killingWeapon = killerEntity.getItemInHand();
+				killerEntity = player;
+				killer = player.getName();
+				killingWeapon = player.getItemInHand();
 			} else if (damager instanceof Projectile) { /// we have some sort of projectile
 				isMelee = false;
 				Projectile proj = (Projectile) damager;
 				if (proj.getShooter() instanceof Player){ /// projectile was shot by a player
+					Player player = (Player) proj.getShooter();
 					killerPlayer = true;
-					killerEntity = (Player) proj.getShooter();
-					killer = killerEntity.getName();
-					killingWeapon = killerEntity.getItemInHand();
+					killerEntity = player;
+					killer = player.getName();
+					killingWeapon = player.getItemInHand();
 				} else if (proj.getShooter() != null){ /// projectile shot by some mob, or other source
-					killer = proj.getShooter().getType().getName();
+					killerEntity = proj.getShooter();
+					killer = killerEntity.getType().getName();
 				} else {
 					killer = UNKNOWN; /// projectile was null?
 				}
@@ -137,9 +136,11 @@ public class BTEntityListener implements Listener{
 					}
 					killer = at.getName();
 				} else {
+					killerEntity = damager;
 					killer = damager.getType().getName();
 				}
 			} else { /// Killer is not a player
+				killerEntity = damager;
 				killer = damager.getType().getName();
 			}
 		} else {
@@ -167,7 +168,7 @@ public class BTEntityListener implements Listener{
 				/// Even with disabled messages, we can still send messages to involved players
 				if (Defaults.INVOLVED_PVP_MESSAGES){
 					String msg = getPvPDeathMessage(killer,target,isMelee,playerTi,killingWeapon);
-					sendMessage(killerEntity, (Player)targetEntity,msg);
+					sendMessage((Player)killerEntity, (Player)targetEntity,msg);
 				} else {
 					sendMessage(pde,null);
 				}
@@ -184,11 +185,27 @@ public class BTEntityListener implements Listener{
 		} else if (!targetPlayer && !killerPlayer){ /// mobs killing each other, or dying by traps
 			/// Do nothing
 		} else { /// One player, One other
-			/// Get rid of Craft before mobs.. CraftSpider -> Spider
-			if (!killerPlayer && killer.contains("Craft")){
-				killer = killer.substring(5);}
-			if (!targetPlayer && target.contains("Craft")){
-				target = target.substring(5);}
+
+			/// If enabled, try to grab the custom name of the mobs and use that
+			/// If disabled or there is no custom name, at least get rid of Craft before mobs.. CraftSpider -> Spider
+			if (!killerPlayer){
+				if (ConfigController.getBoolean("useMobDisplayNames",false) && killerEntity instanceof Creature){
+					String name = ((Creature) killerEntity).getCustomName();
+					if (name != null) killer = name;
+				}
+
+				if (killer.contains("Craft")) {
+					killer = killer.substring(5);}
+			}
+			if (!targetPlayer){
+				if (ConfigController.getBoolean("useMobDisplayNames",false) && targetEntity instanceof Creature){
+					String name = ((Creature) targetEntity).getCustomName();
+					if (name != null) target = name;
+				}
+
+				if (target.contains("Craft")) {
+					target = target.substring(5);}
+			}
 			/// Should we track the kills?
 			if (ConfigController.getBoolean("trackPvE",true)){
 				addRecord(worldTi, killer,target,WLT.WIN);}

@@ -34,6 +34,7 @@ public class ConfigController {
 		Defaults.STREAK_EVERY = config.getInt("streakMessagesEvery", 15);
 		Defaults.PVE_MESSAGES = config.getBoolean("sendPVEDeathMessages",Defaults.PVE_MESSAGES);
 		Defaults.PVP_MESSAGES = config.getBoolean("sendPVPDeathMessages",Defaults.PVP_MESSAGES);
+		Defaults.USE_MOB_DISPLAY_NAMES = config.getBoolean("useMobDisplayNames",Defaults.USE_MOB_DISPLAY_NAMES);
 		Defaults.BUKKIT_PVE_MESSAGES = config.getBoolean("showBukkitPVEMessages",Defaults.BUKKIT_PVE_MESSAGES);
 		Defaults.BUKKIT_PVP_MESSAGES = config.getBoolean("showBukkitPVPMessages",Defaults.BUKKIT_PVP_MESSAGES);
 		Defaults.INVOLVED_PVE_MESSAGES = config.getBoolean("sendInvolvedPvEMessages", Defaults.INVOLVED_PVE_MESSAGES);
@@ -42,12 +43,12 @@ public class ConfigController {
 		Defaults.MSG_TOP_HEADER = config.getString("topHeaderMsg",Defaults.MSG_TOP_HEADER);
 		Defaults.MSG_TOP_BODY = config.getString("topBodyMsg",Defaults.MSG_TOP_BODY);
 		Defaults.USE_SIGNS = config.getBoolean("useSigns",Defaults.USE_SIGNS);
-        UpdateOption o = UpdateOption.fromString(config.getString("autoUpdate", "none"));
-        Defaults.AUTO_UPDATE =  o != null ? o : UpdateOption.NONE;
-        AnnounceUpdateOption ao = AnnounceUpdateOption.fromString(config.getString("announceUpdate", "none"));
-        Defaults.ANNOUNCE_UPDATE =  ao != null ? ao : AnnounceUpdateOption.NONE;
+		UpdateOption o = UpdateOption.fromString(config.getString("autoUpdate", "none"));
+		Defaults.AUTO_UPDATE =  o != null ? o : UpdateOption.NONE;
+		AnnounceUpdateOption ao = AnnounceUpdateOption.fromString(config.getString("announceUpdate", "none"));
+		Defaults.ANNOUNCE_UPDATE =  ao != null ? ao : AnnounceUpdateOption.NONE;
 
-        BTEntityListener.setIgnoreEntities(config.getStringList("ignoreEntities"));
+		BTEntityListener.setIgnoreEntities(config.getStringList("ignoreEntities"));
 		BTEntityListener.setIgnoreWorlds(config.getStringList("ignoreWorlds"));
 	}
 

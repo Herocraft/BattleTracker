@@ -1,4 +1,4 @@
-version: 1.0.4
+version: 1.0.5
 
 # Updates will be retrieved from the latest plugin on the bukkit site. Valid Options : none, release, beta, all
 # none: (don't auto update), release: (only get release version, ignore beta and alpha)
@@ -14,6 +14,7 @@ showBukkitPVPMessages: false # turn on and off normal bukkit death messages for 
 showBukkitPVEMessages: false # turn on and off normal bukkit death messages for pve
 sendPVPDeathMessages: true # send Custom Messages on PvP deaths
 sendPVEDeathMessages: true # send Custom Messages on PvE deaths
+useMobDisplayNames: false # use custom mob names if they exist, instead of generic (Skeleton, Zombie, Spider, etc)
 
 ### If server wide PvP or Pve messages are disabled you can turn
 ### these to true to allow the killer and the dead person

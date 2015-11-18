@@ -16,6 +16,7 @@ public class Defaults {
 	public static boolean PVE_MESSAGES = true;
 	public static boolean BUKKIT_PVP_MESSAGES = false;
 	public static boolean BUKKIT_PVE_MESSAGES = false;
+	public static boolean USE_MOB_DISPLAY_NAMES = false;
 
 	public final static boolean DEBUG = false;
 	public static boolean DEBUG_ADD_RECORDS = false;
